@@ -18,7 +18,7 @@ JANSSON=lib/jansson-2.6/src/.libs/libjansson.a
 VCFLIB=lib/vcflib/libvcf.a
 DISORDER=lib/vcflib/smithwaterman/disorder.c
 
-SCHEMA ?= RELEASE
+SCHEMA ?= DEBUG
 
 all: $(PROGRAM)
 

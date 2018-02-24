@@ -1,6 +1,7 @@
-CFLAGS=-O3 -std=c++98
-INCLUDES=-Ilib/vcflib/src -Ilib/vcflib -Ilib/jansson-2.6/src
-LDADDS=-lz -lstdc++
+CFLAGS=-g -std=c++14 -DHTSLIB
+INCLUDES=-Ilib/vcflib/src -Ilib/vcflib -Ilib/jansson-2.6/src -Ilib/htslibpp -I$(HTSLIB)/include
+LDADDS=-lbz2 -lcurl -lcrypto -lz -llzma -lstdc++ -pthread
+LIBS=$(HTSLIB)/lib/libhts.a
 
 SOURCES=main.cpp \
 		AbstractStatCollector.cpp \
@@ -17,18 +18,23 @@ JANSSON=lib/jansson-2.6/src/.libs/libjansson.a
 VCFLIB=lib/vcflib/libvcf.a
 DISORDER=lib/vcflib/smithwaterman/disorder.c
 
+SCHEMA ?= RELEASE
+
 all: $(PROGRAM)
 
 .PHONY: all
 
-$(PROGRAM): $(PCH) $(OBJECTS) $(VCFLIB) $(JANSSON)
-	$(CXX) $(CFLAGS) -o $@ $(OBJECTS) $(VCFLIB) $(JANSSON) $(DISORDER) $(LDADDS)
+checkvar:
+	@if [ "x$(HTSLIB)" = "x" ]; then echo "HTSLIB need to be defined"; exit 1; fi
+
+$(PROGRAM): checkvar $(PCH) $(OBJECTS) $(VCFLIB) $(JANSSON)
+	$(CXX) $(CFLAGS) -D$(SCHEMA) -o $@ $(OBJECTS) $(LIBS) $(VCFLIB) $(JANSSON) $(DISORDER) $(LDADDS)
 
 .cpp.o:
-	$(CXX) $(CFLAGS) $(INCLUDES) $(PCH_FLAGS) -c $< -o $@
+	$(CXX) $(CFLAGS) -D$(SCHEMA) $(INCLUDES) $(PCH_FLAGS) -c $< -o $@
 
 $(PCH): 
-	$(CXX) $(CFLAGS) $(INCLUDES) -x c++-header $(PCH_SOURCE) -Winvalid-pch -o $@
+	$(CXX) $(CFLAGS) -D$(SCHEMA) $(INCLUDES) -x c++-header $(PCH_SOURCE) -Winvalid-pch -o $@
 
 .PHONY: $(PCH)
 
