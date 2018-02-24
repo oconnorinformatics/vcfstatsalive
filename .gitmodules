@@ -4,3 +4,6 @@
 [submodule "lib/vcflib"]
 	path = lib/vcflib
 	url = https://github.com/yiq/vcflib
+[submodule "lib/htslibpp"]
+	path = lib/htslibpp
+	url = https://github.com/YiCppLib/htslibpp

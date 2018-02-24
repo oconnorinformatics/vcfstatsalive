@@ -41,6 +41,8 @@ namespace VcfStatsAlive {
 #endif
 
 #ifdef DEBUG
+namespace VcfStatsAlive {
+}
 #undef LOGS
 #define LOGS (std::cerr)
 #endif
